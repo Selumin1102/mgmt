@@ -6,7 +6,7 @@ import deployment.mgmt.atrifacts.nexusclient.NexusClient;
 import deployment.mgmt.atrifacts.nexusclient.NexusClientImpl;
 import deployment.mgmt.atrifacts.nexusclient.RepositoryPriorityServiceImpl;
 import deployment.mgmt.atrifacts.strategies.classpathfile.ClasspathFileStrategy;
-import deployment.mgmt.atrifacts.strategies.classpathfile.JarClasspathFileReaderImpl;
+import deployment.mgmt.atrifacts.strategies.classpathfile.MgmtClasspathFileReader;
 import deployment.mgmt.atrifacts.strategies.classpathfile.UnknownGroupResolverImpl;
 import deployment.mgmt.configs.deploysettings.DeploySettingsImpl;
 import deployment.mgmt.configs.deploysettings.SimpleEncryptionServiceImpl;
@@ -21,10 +21,9 @@ import io.microconfig.configs.io.ioservice.selector.ConfigFormatDetectorImpl;
 import io.microconfig.configs.io.ioservice.selector.ConfigIoServiceSelector;
 import io.microconfig.configs.io.ioservice.yaml.YamlConfigIoService;
 import io.microconfig.utils.reader.FsFilesReader;
-import org.junit.jupiter.api.Disabled;
-
 import java.io.File;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 
 import static io.microconfig.utils.Logger.announce;
 import static io.microconfig.utils.TimeUtils.secAfter;
@@ -60,7 +59,7 @@ public class ClasspathTestIT {
                 new DeploySettingsImpl(DeployFileStructureImpl.init(), null, new SimpleEncryptionServiceImpl(), configIoSelector())
         );
         return new ClasspathFileStrategy(
-                new JarClasspathFileReaderImpl(),
+                new MgmtClasspathFileReader(),
                 new UnknownGroupResolverImpl(nexusClient),
                 nexusClient
         );

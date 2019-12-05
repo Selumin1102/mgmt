@@ -14,7 +14,7 @@ import deployment.mgmt.atrifacts.nexusclient.NexusClient;
 import deployment.mgmt.atrifacts.nexusclient.NexusClientImpl;
 import deployment.mgmt.atrifacts.nexusclient.RepositoryPriorityServiceImpl;
 import deployment.mgmt.atrifacts.strategies.classpathfile.ClasspathFileStrategy;
-import deployment.mgmt.atrifacts.strategies.classpathfile.JarClasspathFileReaderImpl;
+import deployment.mgmt.atrifacts.strategies.classpathfile.MgmtClasspathFileReader;
 import deployment.mgmt.atrifacts.strategies.classpathfile.UnknownGroupResolverImpl;
 import deployment.mgmt.atrifacts.strategies.nexus.NexusClasspathStrategy;
 import deployment.mgmt.configs.componentgroup.ComponentGroupService;
@@ -36,8 +36,21 @@ import deployment.mgmt.configs.service.metadata.MetadataProviderImpl;
 import deployment.mgmt.configs.service.properties.PropertyService;
 import deployment.mgmt.configs.service.properties.impl.PropertyServiceImpl;
 import deployment.mgmt.configs.servicenameresolver.ServiceNameResolverImpl;
-import deployment.mgmt.configs.updateconfigs.*;
-import deployment.mgmt.init.*;
+import deployment.mgmt.configs.updateconfigs.ExtractServiceImpl;
+import deployment.mgmt.configs.updateconfigs.NewServicePreparerImpl;
+import deployment.mgmt.configs.updateconfigs.OldConfigsRelativePathResolver;
+import deployment.mgmt.configs.updateconfigs.TemplateService;
+import deployment.mgmt.configs.updateconfigs.TemplateServiceImpl;
+import deployment.mgmt.configs.updateconfigs.UpdateConfigCommand;
+import deployment.mgmt.configs.updateconfigs.UpdateConfigCommandImpl;
+import deployment.mgmt.init.EnvDependenciesDownloader;
+import deployment.mgmt.init.EnvDependenciesDownloaderImpl;
+import deployment.mgmt.init.InitConfigsCommand;
+import deployment.mgmt.init.InitConfigsCommandImpl;
+import deployment.mgmt.init.InitService;
+import deployment.mgmt.init.InitServiceImpl;
+import deployment.mgmt.init.OldFilesCleanerImpl;
+import deployment.mgmt.init.PwdServiceImpl;
 import deployment.mgmt.lock.LockService;
 import deployment.mgmt.lock.OsLockService;
 import deployment.mgmt.process.log.LessLogCommand;
@@ -46,14 +59,23 @@ import deployment.mgmt.process.runner.ScriptRunnerImpl;
 import deployment.mgmt.process.start.StartCommand;
 import deployment.mgmt.process.start.StartCommandImpl;
 import deployment.mgmt.process.start.poststart.RunPostStartScript;
-import deployment.mgmt.process.start.prestart.*;
+import deployment.mgmt.process.start.prestart.ApplyAlteredVersion;
+import deployment.mgmt.process.start.prestart.ArchiveLogs;
+import deployment.mgmt.process.start.prestart.BuildClasspath;
+import deployment.mgmt.process.start.prestart.CompositePreStar;
+import deployment.mgmt.process.start.prestart.RunPreStartScript;
 import deployment.mgmt.process.start.strategy.AppStartStrategy;
 import deployment.mgmt.process.start.strategy.JavaStartStrategy;
 import deployment.mgmt.process.start.strategy.NotExecutableStartStrategy;
 import deployment.mgmt.process.start.strategy.StartStrategySelector;
 import deployment.mgmt.process.status.StatusCommand;
 import deployment.mgmt.process.status.StatusCommandImpl;
-import deployment.mgmt.process.stop.*;
+import deployment.mgmt.process.stop.KillCommand;
+import deployment.mgmt.process.stop.KillCommandImpl;
+import deployment.mgmt.process.stop.StopCommand;
+import deployment.mgmt.process.stop.StopCommandImpl;
+import deployment.mgmt.process.stop.StopService;
+import deployment.mgmt.process.stop.StopServiceImpl;
 import deployment.mgmt.ssh.SshCommand;
 import deployment.mgmt.ssh.SshCommandImpl;
 import deployment.mgmt.stat.monitoring.MonitoringService;
@@ -78,9 +100,8 @@ import io.microconfig.configs.io.ioservice.selector.ConfigIoServiceSelector;
 import io.microconfig.configs.io.ioservice.yaml.YamlConfigIoService;
 import io.microconfig.utils.reader.FilesReader;
 import io.microconfig.utils.reader.FsFilesReader;
-import lombok.Getter;
-
 import java.util.List;
+import lombok.Getter;
 
 import static io.microconfig.commands.buildconfig.features.templates.TemplatePattern.DEFAULT_TEMPLATE_PREFIX;
 import static io.microconfig.commands.buildconfig.features.templates.TemplatePattern.defaultPattern;
@@ -136,7 +157,7 @@ public class MgmtFactory {
                 new ClasspathStoreImpl(deployFileStructure, propertyService),
                 ClasspathStrategySelectorImpl.from(
                         new NexusClasspathStrategy(),
-                        new ClasspathFileStrategy(new JarClasspathFileReaderImpl(), new UnknownGroupResolverImpl(nexusClient), nexusClient)
+                        new ClasspathFileStrategy(new MgmtClasspathFileReader(), new UnknownGroupResolverImpl(nexusClient), nexusClient)
                 )
         );
         this.scriptRunner = new ScriptRunnerImpl(deployFileStructure);
