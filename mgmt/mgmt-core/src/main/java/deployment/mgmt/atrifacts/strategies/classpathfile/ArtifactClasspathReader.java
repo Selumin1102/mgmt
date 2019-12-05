@@ -10,7 +10,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 public class ArtifactClasspathReader implements JarClasspathReader {
-    private static final int MINIMAL_IDENTIFIERS_COUNT = 3;
+    private static final int MINIMAL_IDENTIFIERS_COUNT = 2;
 
     @Override
     public List<Artifact> extractClasspath(File artifactFile, Artifact artifact) {
