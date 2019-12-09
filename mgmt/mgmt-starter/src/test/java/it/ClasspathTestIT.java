@@ -5,7 +5,9 @@ import deployment.mgmt.atrifacts.ClasspathStrategy;
 import deployment.mgmt.atrifacts.nexusclient.NexusClient;
 import deployment.mgmt.atrifacts.nexusclient.NexusClientImpl;
 import deployment.mgmt.atrifacts.nexusclient.RepositoryPriorityServiceImpl;
+import deployment.mgmt.atrifacts.strategies.classpathfile.ArtifactClasspathReader;
 import deployment.mgmt.atrifacts.strategies.classpathfile.ClasspathFileStrategy;
+import deployment.mgmt.atrifacts.strategies.classpathfile.JarClasspathReaderSelectorImpl;
 import deployment.mgmt.atrifacts.strategies.classpathfile.MgmtClasspathFileReader;
 import deployment.mgmt.atrifacts.strategies.classpathfile.UnknownGroupResolverImpl;
 import deployment.mgmt.configs.deploysettings.DeploySettingsImpl;
@@ -59,7 +61,10 @@ public class ClasspathTestIT {
                 new DeploySettingsImpl(DeployFileStructureImpl.init(), null, new SimpleEncryptionServiceImpl(), configIoSelector())
         );
         return new ClasspathFileStrategy(
-                new MgmtClasspathFileReader(),
+                new JarClasspathReaderSelectorImpl(
+                        new ArtifactClasspathReader(),
+                        new MgmtClasspathFileReader()
+                ),
                 new UnknownGroupResolverImpl(nexusClient),
                 nexusClient
         );

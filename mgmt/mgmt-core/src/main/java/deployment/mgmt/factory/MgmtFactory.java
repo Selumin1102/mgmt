@@ -15,7 +15,7 @@ import deployment.mgmt.atrifacts.nexusclient.NexusClientImpl;
 import deployment.mgmt.atrifacts.nexusclient.RepositoryPriorityServiceImpl;
 import deployment.mgmt.atrifacts.strategies.classpathfile.ArtifactClasspathReader;
 import deployment.mgmt.atrifacts.strategies.classpathfile.ClasspathFileStrategy;
-import deployment.mgmt.atrifacts.strategies.classpathfile.JarClasspathSelectingReader;
+import deployment.mgmt.atrifacts.strategies.classpathfile.JarClasspathReaderSelectorImpl;
 import deployment.mgmt.atrifacts.strategies.classpathfile.MgmtClasspathFileReader;
 import deployment.mgmt.atrifacts.strategies.classpathfile.UnknownGroupResolverImpl;
 import deployment.mgmt.atrifacts.strategies.nexus.NexusClasspathStrategy;
@@ -160,7 +160,7 @@ public class MgmtFactory {
                 ClasspathStrategySelectorImpl.from(
                         new NexusClasspathStrategy(),
                         new ClasspathFileStrategy(
-                                new JarClasspathSelectingReader(new ArtifactClasspathReader(), new MgmtClasspathFileReader()),
+                                new JarClasspathReaderSelectorImpl(new ArtifactClasspathReader(), new MgmtClasspathFileReader()),
                                 new UnknownGroupResolverImpl(nexusClient),
                                 nexusClient
                         )

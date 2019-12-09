@@ -1,25 +1,22 @@
 package deployment.mgmt.atrifacts.strategies.classpathfile;
 
-import deployment.mgmt.atrifacts.Artifact;
 import java.io.File;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+import static deployment.mgmt.atrifacts.strategies.classpathfile.JarClasspathReader.CLASSPATH_GRADLE_FILE;
 import static deployment.mgmt.utils.ZipUtils.containsInnerFile;
 
 @RequiredArgsConstructor
-public class JarClasspathSelectingReader implements JarClasspathReader {
+public class JarClasspathReaderSelectorImpl implements JarClasspathReaderSelector {
     private final ArtifactClasspathReader artifactClasspathReader;
     private final MgmtClasspathFileReader mgmtClasspathFileReader;
 
     @Override
-    public List<Artifact> extractClasspath(File artifactFile, Artifact artifact) {
-        JarClasspathReader reader;
+    public JarClasspathReader selectReader(File artifactFile) {
         if (containsInnerFile(artifactFile, CLASSPATH_GRADLE_FILE)) {
-            reader = artifactClasspathReader;
+            return artifactClasspathReader;
         } else {
-            reader = mgmtClasspathFileReader;
+            return mgmtClasspathFileReader;
         }
-        return reader.extractClasspath(artifactFile, artifact);
     }
 }

@@ -11,6 +11,7 @@ import static java.util.stream.Collectors.toList;
 
 public class ArtifactClasspathReader implements JarClasspathReader {
     private static final int MINIMAL_IDENTIFIERS_COUNT = 2;
+    private static final char MAVEN_PARTS_DIVIDER = ':';
 
     @Override
     public List<Artifact> extractClasspath(File artifactFile, Artifact artifact) {
@@ -31,6 +32,10 @@ public class ArtifactClasspathReader implements JarClasspathReader {
     }
 
     private static boolean hasEnoughData(String mavenString) {
-        return mavenString.chars().filter(ch -> ch == ':').count() >= MINIMAL_IDENTIFIERS_COUNT;
+        return getCountOfMavenParts(mavenString) >= MINIMAL_IDENTIFIERS_COUNT;
+    }
+
+    private static long getCountOfMavenParts(String mavenString) {
+        return mavenString.chars().filter(ch -> ch == MAVEN_PARTS_DIVIDER).count();
     }
 }
