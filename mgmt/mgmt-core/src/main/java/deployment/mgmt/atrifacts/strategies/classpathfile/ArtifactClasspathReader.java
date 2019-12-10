@@ -19,20 +19,24 @@ public class ArtifactClasspathReader implements JarClasspathReader {
         String classpath = new String(readInnerFile(artifactFile, CLASSPATH_GRADLE_FILE));
 
         return stream(classpath.split(", "))
-                .map(ArtifactClasspathReader::toArtifact)
+                .map(mavenString -> toArtifact(mavenString))
                 .filter(Objects::nonNull)
                 .collect(toList());
     }
 
-    private static Artifact toArtifact(String mavenString) {
-        return hasEnoughData(mavenString) ? Artifact.fromMavenString(mavenString) : null;
+    private Artifact toArtifact(String mavenString) {
+        if (hasEnoughData(mavenString)) {
+            return Artifact.fromMavenString(mavenString);
+        } else {
+            throw new IllegalArgumentException("Incorrect maven artifact: " + mavenString);
+        }
     }
 
-    private static boolean hasEnoughData(String mavenString) {
+    private boolean hasEnoughData(String mavenString) {
         return getCountOfMavenParts(mavenString) >= MINIMAL_IDENTIFIERS_COUNT;
     }
 
-    private static long getCountOfMavenParts(String mavenString) {
+    private long getCountOfMavenParts(String mavenString) {
         return mavenString.chars().filter(ch -> ch == MAVEN_PARTS_DIVIDER).count();
     }
 }

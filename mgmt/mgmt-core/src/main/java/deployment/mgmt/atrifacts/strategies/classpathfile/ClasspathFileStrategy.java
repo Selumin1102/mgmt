@@ -8,11 +8,12 @@ import deployment.mgmt.atrifacts.nexusclient.NexusClient;
 import deployment.mgmt.configs.service.properties.ClasspathStrategyType;
 import deployment.mgmt.configs.service.properties.NexusRepository;
 import io.microconfig.utils.Logger;
+import lombok.RequiredArgsConstructor;
+import mgmt.utils.FileLogger;
+
 import java.io.File;
 import java.util.List;
 import java.util.function.Supplier;
-import lombok.RequiredArgsConstructor;
-import mgmt.utils.FileLogger;
 
 import static deployment.mgmt.configs.service.properties.ClasspathStrategyType.CLASSPATH_FILE;
 import static io.microconfig.utils.TimeUtils.percentProgress;
@@ -22,7 +23,7 @@ import static mgmt.utils.LoggerUtils.oneLineInfo;
 
 @RequiredArgsConstructor
 public class ClasspathFileStrategy implements ClasspathStrategy {
-    private final JarClasspathReaderSelector jarClasspathReaderSelector;
+    private final JarClasspathReader jarClasspathReader;
     private final UnknownGroupResolver unknownGroupResolver;
     private final NexusClient nexus;
 
@@ -38,7 +39,6 @@ public class ClasspathFileStrategy implements ClasspathStrategy {
 
             if (resolveSingleArtifact) return singletonList(serviceJar);
 
-            JarClasspathReader jarClasspathReader = jarClasspathReaderSelector.selectReader(serviceJar);
             List<Artifact> classpath = jarClasspathReader.extractClasspath(serviceJar, artifact);
             List<Artifact> resolved = unknownGroupResolver.resolve(classpath, artifact, nexusRepositories, localRepositoryDir);
             //todo2 print warn if version conflict detected
