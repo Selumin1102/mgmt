@@ -58,7 +58,7 @@ public class ClasspathTestIT {
                 new DeploySettingsImpl(DeployFileStructureImpl.init(), null, new SimpleEncryptionServiceImpl(), configIoSelector())
         );
         return new ClasspathFileStrategy(
-                new JarClasspathReaderSelectorImpl(
+                new JarClasspathReaderSelector(
                         new ArtifactClasspathReader(),
                         new MgmtClasspathFileReader()
                 ),

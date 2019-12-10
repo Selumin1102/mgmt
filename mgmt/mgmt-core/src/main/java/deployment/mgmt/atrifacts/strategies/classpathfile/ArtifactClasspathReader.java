@@ -25,11 +25,7 @@ public class ArtifactClasspathReader implements JarClasspathReader {
     }
 
     private static Artifact toArtifact(String mavenString) {
-        if (hasEnoughData(mavenString)) {
-            return Artifact.fromMavenString(mavenString);
-        } else {
-            return null;
-        }
+        return hasEnoughData(mavenString) ? Artifact.fromMavenString(mavenString) : null;
     }
 
     private static boolean hasEnoughData(String mavenString) {

@@ -135,7 +135,7 @@ public class MgmtFactory {
                 ClasspathStrategySelectorImpl.from(
                         new NexusClasspathStrategy(),
                         new ClasspathFileStrategy(
-                                new JarClasspathReaderSelectorImpl(new ArtifactClasspathReader(), new MgmtClasspathFileReader()),
+                                new JarClasspathReaderSelector(new ArtifactClasspathReader(), new MgmtClasspathFileReader()),
                                 new UnknownGroupResolverImpl(nexusClient),
                                 nexusClient
                         )
