@@ -1,7 +1,8 @@
 package deployment.mgmt.atrifacts.strategies.classpathfile;
 
-import java.io.File;
 import lombok.RequiredArgsConstructor;
+
+import java.io.File;
 
 import static deployment.mgmt.atrifacts.strategies.classpathfile.JarClasspathReader.CLASSPATH_GRADLE_FILE;
 import static deployment.mgmt.utils.ZipUtils.containsInnerFile;

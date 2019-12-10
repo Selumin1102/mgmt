@@ -1,15 +1,12 @@
 package deployment.mgmt.atrifacts.changes;
 
 import deployment.mgmt.atrifacts.Artifact;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.zip.ZipEntry;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+
+import java.io.File;
+import java.util.*;
+import java.util.zip.ZipEntry;
 
 import static deployment.mgmt.atrifacts.Artifact.SNAPSHOT;
 import static deployment.mgmt.atrifacts.ArtifactType.JAR;
